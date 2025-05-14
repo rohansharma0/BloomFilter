@@ -19,8 +19,5 @@ func LoanConfig() *Config {
 		panic("Error loading .env file")
 	}
 	cfg.Server.Port = os.Getenv("PORT")
-	if cfg.Server.Port == "" {
-		cfg.Server.Port = ":8080"
-	}
 	return cfg
 }

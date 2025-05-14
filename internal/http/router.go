@@ -17,7 +17,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 
 	routes := router.Group("/api")
 	{
-		routes.GET("/attepmt", func(c *gin.Context) {
+		routes.GET("/attempt", func(c *gin.Context) {
 			username := c.Query("username")
 
 			if username == "" {
@@ -27,7 +27,7 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 				return
 			}
 
-			c.JSON(http.StatusOK, service.IsUsernameExists(username))
+			c.JSON(http.StatusOK, !service.IsUsernameExists(username))
 		})
 
 		routes.POST("/register", func(c *gin.Context) {
@@ -42,7 +42,13 @@ func SetupRouter(cfg *config.Config) *gin.Engine {
 
 			if req.Username == "" {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": "username is not present.",
+					"error": "bad request.",
+				})
+				return
+			}
+			if service.IsUsernameExists(req.Username) {
+				c.JSON(http.StatusConflict, gin.H{
+					"error": "username may already be taken.",
 				})
 				return
 			}
